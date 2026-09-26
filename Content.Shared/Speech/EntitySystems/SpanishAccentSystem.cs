@@ -13,6 +13,12 @@ public sealed partial class SpanishAccentSystem : RelayAccentSystem<SpanishAccen
     // FOR WORDS IN ALL UPPERCASE (ONLY ONE "S" IS ALLOWED, ASSUMING IT'S NOT AN ACRONYM)
     private static readonly Regex RegexUpper = new(@"(?<!\w)(SH*[BCDFGJKLMNPQRTVWXZ])");
 
+    // Corvax-Localization-Start
+    private static readonly Regex RegexLowerRu = new(@"(?<!\w)((с+|ш+|щ+)[бвгджзйклмнпртфхцч])");
+    private static readonly Regex RegexCapsRu = new(@"(?<!\w)(С|Ш|Щ)(с*ш*щ*[бвгджзйклмнпртфхцч])");
+    private static readonly Regex RegexUpperRu = new(@"(?<!\w)((С+|Ш+|Щ+)[БВГДЖЗЙКЛМНПРТФХЦЧ])");
+    // Corvax-Localization-End
+
     public override string Accentuate(string message, Entity<SpanishAccentComponent>? ent = null)
     {
         // Insert E before every S that is followed by a consonant that makes a distinct sound
@@ -29,6 +35,12 @@ public sealed partial class SpanishAccentSystem : RelayAccentSystem<SpanishAccen
         message = RegexLower.Replace(message, "e$1");
         message = RegexCaps.Replace(message, "Es$1");
         message = RegexUpper.Replace(message, "E$1");
+
+        // Corvax-Localization-Start
+        message = RegexLowerRu.Replace(message, "э$1");
+        message = RegexCapsRu.Replace(message, "Э$2");
+        message = RegexUpperRu.Replace(message, "Э$1");
+        // Corvax-Localization-End
         return message;
     }
 
